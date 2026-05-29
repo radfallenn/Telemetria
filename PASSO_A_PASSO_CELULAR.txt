@@ -1,0 +1,58 @@
+GT7 Bridge Mobile APK v1.1 - 29/05/26 as 10:22
+
+OBJETIVO
+Criar um APK Android que recebe a telemetria do Gran Turismo 7 direto no smartphone e disponibiliza os dados para o gt7.online.
+
+ARQUIVO IMPORTANTE
+Este pacote é o projeto Android completo. O APK final será gerado pelo GitHub Actions.
+
+PASSO A PASSO PELO CELULAR
+
+1. Extraia este ZIP no celular.
+2. Entre no GitHub pelo navegador.
+3. Crie um repositório chamado gt7-bridge-mobile.
+4. Envie todos os arquivos extraídos para esse repositório.
+5. No GitHub, abra a aba Actions.
+6. Execute o workflow Gerar APK Android.
+7. Ao terminar, baixe o artefato GT7-Bridge-Mobile-APK-v1.1.
+8. Extraia esse artefato.
+9. Instale o arquivo app-debug.apk no Android.
+
+COMO USAR O APK
+
+1. Abra o app GT7 Bridge Mobile.
+2. Informe o IP do PS5.
+3. Toque em Iniciar Bridge.
+4. Deixe o app rodando com a notificação ativa.
+5. Entre em uma corrida no Gran Turismo 7.
+6. Teste no navegador do celular:
+   http://127.0.0.1:8787/api/fields
+
+ENDEREÇOS PARA O GT7.ONLINE
+
+No mesmo celular:
+http://127.0.0.1:8787/api/fields
+ws://127.0.0.1:8787/ws
+
+Em outro aparelho da mesma rede:
+http://IP_DO_CELULAR:8787/api/fields
+ws://IP_DO_CELULAR:8787/ws
+
+DADOS ENTREGUES
+
+velocidade
+RPM
+marcha
+acelerador
+freio
+combustível
+melhor volta
+tempo total de corrida
+número de voltas completadas
+chuva
+controle de tração
+número de paradas
+mapa/rastro por coordenadas
+
+OBSERVAÇÃO SOBRE CHUVA E CONTROLE DE TRAÇÃO
+Esses campos estão preparados no JSON. Se a telemetria não enviar o valor de forma confiável, eles ficam nulos ou manuais para não quebrar o gt7.online.

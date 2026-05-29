@@ -1,0 +1,119 @@
+{
+  "project": "gt7.online",
+  "integration_name": "GT7 Mobile Bridge APK",
+  "version": "v1.1",
+  "created_at": "29/05/26 as 10:22",
+  "goal": "Integrar o gt7.online com o APK Android que recebe telemetria UDP do Gran Turismo 7 diretamente no smartphone.",
+  "bridge": {
+    "type": "android_local_bridge",
+    "same_device_api": "http://127.0.0.1:8787/api/fields",
+    "same_device_ws": "ws://127.0.0.1:8787/ws",
+    "network_api_template": "http://IP_DO_CELULAR:8787/api/fields",
+    "network_ws_template": "ws://IP_DO_CELULAR:8787/ws",
+    "preferred_mode": "polling_http_first",
+    "polling_interval_ms": 300,
+    "cors": "enabled",
+    "private_network_access_header": "Access-Control-Allow-Private-Network: true"
+  },
+  "fields": {
+    "velocidade": {
+      "type": "number",
+      "unit": "km/h",
+      "source": "speedKph"
+    },
+    "rpm": {
+      "type": "number",
+      "unit": "rpm"
+    },
+    "marcha": {
+      "type": "string"
+    },
+    "acelerador": {
+      "type": "number",
+      "unit": "%"
+    },
+    "freio": {
+      "type": "number",
+      "unit": "%"
+    },
+    "combustivel": {
+      "type": "number|null",
+      "unit": "% or litros"
+    },
+    "melhorVolta": {
+      "type": "string",
+      "format": "m:ss.SSS"
+    },
+    "tempoTotalCorrida": {
+      "type": "string",
+      "format": "h:mm:ss.SSS or m:ss.SSS"
+    },
+    "numeroVoltasCompletadas": {
+      "type": "number"
+    },
+    "chuva": {
+      "type": "number|null",
+      "unit": "%",
+      "fallback": "manual_or_null"
+    },
+    "controleTracao": {
+      "type": "number|null",
+      "fallback": "manual_or_null"
+    },
+    "numeroParadas": {
+      "type": "number"
+    },
+    "mapa": {
+      "type": "object|null",
+      "contains": "x,y,z,heading,speedKph,timestamp"
+    },
+    "rastroTotal": {
+      "type": "number"
+    }
+  },
+  "storage_model": {
+    "sessions": {
+      "id": "string",
+      "startedAt": "datetime",
+      "endedAt": "datetime|null",
+      "car": "string|null",
+      "track": "string|null",
+      "bestLap": "string|null",
+      "totalRaceTime": "string|null",
+      "completedLaps": "number",
+      "pitStops": "number"
+    },
+    "telemetry_samples": {
+      "sessionId": "string",
+      "timestamp": "datetime",
+      "speedKph": "number",
+      "rpm": "number",
+      "gear": "string",
+      "throttle": "number",
+      "brake": "number",
+      "fuel": "number|null",
+      "rain": "number|null",
+      "tractionControl": "number|null",
+      "x": "number|null",
+      "y": "number|null",
+      "z": "number|null"
+    },
+    "map_points": {
+      "sessionId": "string",
+      "timestamp": "datetime",
+      "x": "number",
+      "y": "number",
+      "z": "number",
+      "heading": "number|null",
+      "speedKph": "number|null"
+    }
+  },
+  "ai_studio_instruction": "Adicionar um módulo de telemetria no gt7.online sem alterar o layout existente. O módulo deve tentar ler http://127.0.0.1:8787/api/fields a cada 300ms, preencher os campos principais, gravar amostras por sessão e manter fallback visual quando o APK estiver desligado. Não quebrar telas existentes. Usar WebSocket apenas como melhoria, mantendo polling HTTP como modo principal para Android.",
+  "acceptance_tests": [
+    "Com o APK desligado, o gt7.online deve mostrar Bridge offline sem travar.",
+    "Com o APK ligado, /api/fields deve alimentar velocidade, rpm, marcha, acelerador e freio.",
+    "O app deve gravar amostras com timestamp enquanto houver telemetria.",
+    "O mapa deve registrar pontos x,y,z quando disponíveis.",
+    "Campos nulos como chuva ou controleTracao não devem quebrar gráficos nem cards."
+  ]
+}

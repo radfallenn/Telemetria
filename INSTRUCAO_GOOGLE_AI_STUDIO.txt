@@ -1,0 +1,26 @@
+INSTRUÇÃO PARA GOOGLE AI STUDIO / STITCH
+
+Integre o gt7.online ao APK GT7 Bridge Mobile v1.1.
+
+Não refaça o layout do app. Não remova funções existentes. Apenas adicione a camada de telemetria local.
+
+Origem principal dos dados:
+http://127.0.0.1:8787/api/fields
+
+Modo recomendado:
+Polling HTTP a cada 300ms, com fallback visual quando offline.
+
+WebSocket opcional:
+ws://127.0.0.1:8787/ws
+
+Campos obrigatórios:
+velocidade, rpm, marcha, acelerador, freio, combustivel, melhorVolta, tempoTotalCorrida, numeroVoltasCompletadas, chuva, controleTracao, numeroParadas, mapa, rastroTotal.
+
+Regras:
+- Se o campo vier null, mostrar "--" e não quebrar o app.
+- Gravar cada amostra com timestamp.
+- Criar sessão automaticamente quando começar a receber dados.
+- Encerrar sessão quando ficar sem pacotes por mais de 30 segundos.
+- Salvar rastro do mapa usando x, y, z quando disponíveis.
+- Usar IndexedDB/localStorage como fallback caso o banco remoto esteja indisponível.
+- Preparar integração posterior com Supabase, mas sem obrigar login para teste local.

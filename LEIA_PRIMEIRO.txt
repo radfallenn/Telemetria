@@ -1,0 +1,60 @@
+GT7 Bridge Mobile APK v1.1 - 28-05-26 as 16-46
+
+Objetivo:
+Gerar um APK Android direto pela nuvem usando GitHub Actions, sem PC e sem Termux.
+
+O app Android faz:
+- recebe telemetria UDP do PS5/Gran Turismo 7;
+- envia heartbeat para o GT7;
+- decodifica os pacotes;
+- cria API local para o gt7.online;
+- roda em foreground service com notificação;
+- entrega os campos pedidos.
+
+Campos disponíveis:
+- velocidade
+- RPM
+- marcha
+- acelerador
+- freio
+- combustível
+- melhor volta
+- tempo total de corrida
+- número de voltas completadas
+- chuva
+- controle de tração
+- número de paradas
+- mapa/rastro por coordenadas
+
+Como gerar o APK pelo celular:
+
+1. Crie um repositório novo no GitHub.
+2. Envie todos os arquivos deste pacote para o repositório.
+3. Abra a aba Actions do repositório.
+4. Rode o workflow "Gerar APK Android".
+5. Ao terminar, baixe o artefato "GT7-Bridge-Mobile-APK-v1.1".
+6. Dentro dele estará o arquivo app-debug.apk.
+7. Instale o APK no Android.
+8. Abra o app GT7 Bridge Mobile.
+9. Digite o IP do PS5.
+10. Toque em Iniciar Bridge.
+
+URLs para o gt7.online no mesmo celular:
+
+http://127.0.0.1:8787/api/fields
+http://127.0.0.1:8787/api/gt7-online
+http://127.0.0.1:8787/api/telemetry
+ws://127.0.0.1:8787/ws
+
+URLs para outro aparelho na mesma rede:
+
+http://IP_DO_CELULAR:8787/api/fields
+http://IP_DO_CELULAR:8787/api/gt7-online
+ws://IP_DO_CELULAR:8787/ws
+
+Observações importantes:
+- O GT7 precisa estar aberto e em corrida/volta para enviar telemetria.
+- O PS5 e o celular precisam estar na mesma rede.
+- Se outro app, como Victory/SimHub, estiver usando a telemetria ao mesmo tempo, pode haver conflito.
+- Chuva e controle de tração ficam disponíveis como campos manuais/nulos quando a telemetria UDP não expõe esses valores de forma confiável.
+- Se o Android fechar o app em segundo plano, desative a otimização de bateria para o GT7 Bridge Mobile.
