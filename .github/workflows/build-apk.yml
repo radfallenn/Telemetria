@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
       - name: Configurar Node
         uses: actions/setup-node@v4
@@ -48,6 +48,8 @@ jobs:
 
       - name: Conferir projeto Android
         run: |
+          echo "Versao Java:"
+          java -version
           echo "Arquivos em android:"
           ls -la android
           echo "Arquivos APK esperados depois do build:"
