@@ -23,25 +23,41 @@ jobs:
       - name: Configurar Node
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
+
+      - name: Conferir estrutura do projeto
+        run: |
+          echo "Arquivos na raiz:"
+          ls -la
+          echo "Arquivos em www:"
+          ls -la www
 
       - name: Instalar dependências
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Criar projeto Android se necessário
         run: |
           if [ ! -d android ]; then
             npx cap add android
+          else
+            echo "Pasta android já existe"
           fi
 
       - name: Sincronizar app web com Android
         run: npx cap sync android
 
+      - name: Conferir projeto Android
+        run: |
+          echo "Arquivos em android:"
+          ls -la android
+          echo "Arquivos APK esperados depois do build:"
+          ls -la android/app || true
+
       - name: Dar permissão ao Gradle
         run: chmod +x android/gradlew
 
       - name: Gerar APK Debug
-        run: cd android && ./gradlew assembleDebug
+        run: cd android && ./gradlew assembleDebug --stacktrace
 
       - name: Enviar APK como artifact
         uses: actions/upload-artifact@v4
