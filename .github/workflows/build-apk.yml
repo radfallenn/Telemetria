@@ -58,7 +58,7 @@ jobs:
             echo "ERRO: card CARRO / PISTA ainda existe"
             exit 1
           fi
-          grep -q "scheduleReconnect" android/app/src/main/assets/public/index.html
+          grep -q "autoBridgeTimer" android/app/src/main/assets/public/index.html
 
       - name: Dar permissão ao Gradle
         run: chmod +x android/gradlew
