@@ -25,12 +25,14 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Conferir estrutura do projeto
+      - name: Conferir estrutura e tela atual
         run: |
           echo "Arquivos na raiz:"
           ls -la
           echo "Arquivos em www:"
           ls -la www
+          echo "Marcadores esperados no app:"
+          grep -o "MÉDIA DE TEMPO\|CARRO / PISTA\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" www/index.html || true
 
       - name: Instalar dependências
         run: npm install --no-audit --no-fund
@@ -44,22 +46,16 @@ jobs:
           fi
 
       - name: Sincronizar app web com Android
-        run: npx cap sync android
-
-      - name: Conferir projeto Android
         run: |
-          echo "Versao Java:"
-          java -version
-          echo "Arquivos em android:"
-          ls -la android
-          echo "Arquivos APK esperados depois do build:"
-          ls -la android/app || true
+          npx cap sync android
+          echo "Verificando index copiado para o Android:"
+          grep -o "MÉDIA DE TEMPO\|CARRO / PISTA\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" android/app/src/main/assets/public/index.html || true
 
       - name: Dar permissão ao Gradle
         run: chmod +x android/gradlew
 
       - name: Gerar APK Debug
-        run: cd android && ./gradlew assembleDebug --stacktrace
+        run: cd android && ./gradlew clean assembleDebug --stacktrace
 
       - name: Enviar APK como artifact
         uses: actions/upload-artifact@v4
