@@ -32,10 +32,13 @@ jobs:
           echo "Arquivos em www:"
           ls -la www
           echo "Marcadores esperados no app:"
-          grep -o "MÉDIA DE TEMPO\|CARRO / PISTA\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" www/index.html || true
+          grep -o "MÉDIA DE TEMPO\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" www/index.html || true
 
       - name: Instalar dependências
         run: npm install --no-audit --no-fund
+
+      - name: Aplicar patch visual e auto conexao
+        run: node scripts/patch-index.js
 
       - name: Criar projeto Android se necessário
         run: |
@@ -47,9 +50,15 @@ jobs:
 
       - name: Sincronizar app web com Android
         run: |
+          node scripts/patch-index.js
           npx cap sync android
           echo "Verificando index copiado para o Android:"
-          grep -o "MÉDIA DE TEMPO\|CARRO / PISTA\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" android/app/src/main/assets/public/index.html || true
+          grep -o "MÉDIA DE TEMPO\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" android/app/src/main/assets/public/index.html || true
+          if grep -q "CARRO / PISTA" android/app/src/main/assets/public/index.html; then
+            echo "ERRO: card CARRO / PISTA ainda existe"
+            exit 1
+          fi
+          grep -q "scheduleReconnect" android/app/src/main/assets/public/index.html
 
       - name: Dar permissão ao Gradle
         run: chmod +x android/gradlew
