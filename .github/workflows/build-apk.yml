@@ -37,7 +37,7 @@ jobs:
       - name: Instalar dependências
         run: npm install --no-audit --no-fund
 
-      - name: Aplicar patch visual e auto conexao
+      - name: Aplicar patch visual
         run: node scripts/patch-index.js
 
       - name: Criar projeto Android se necessário
@@ -58,7 +58,6 @@ jobs:
             echo "ERRO: card CARRO / PISTA ainda existe"
             exit 1
           fi
-          grep -q "autoBridgeTimer" android/app/src/main/assets/public/index.html
 
       - name: Dar permissão ao Gradle
         run: chmod +x android/gradlew
