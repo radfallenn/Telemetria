@@ -4,6 +4,10 @@ const path = require('path');
 const file = path.join(__dirname, '..', 'www', 'index.html');
 let s = fs.readFileSync(file, 'utf8');
 
+// Atualiza IPs atuais da rede.
+s = s.replace(/192\.168\.1\.54/g, '192.168.1.68');
+s = s.replace(/192\.168\.1\.72/g, '192.168.1.70');
+
 // Remove somente o card CARRO / PISTA da tela principal.
 s = s.replace(/<article class="card glass wide"><div class="ico">🏎️<\/div><div class="title">CARRO \/ PISTA<\/div><div class="val" id="carTrackName">--<\/div><div class="sub" id="carTrackIds">IDs: --<\/div><\/article>/g, '');
 
@@ -20,4 +24,4 @@ if (!s.includes('autoBridgeTimer')) {
 }
 
 fs.writeFileSync(file, s, 'utf8');
-console.log('Patch aplicado: card CARRO / PISTA removido e auto conexão simples ativa.');
+console.log('Patch aplicado: IPs atualizados, card CARRO / PISTA removido e auto conexão ativa.');
