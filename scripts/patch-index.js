@@ -15,6 +15,12 @@ s = s.replace(/<article class="card glass wide"><div class="ico">🏎️<\/div><
 s = s.replace(/\$\('carTrackName'\)\.textContent='--';\$\('carTrackIds'\)\.textContent='IDs: --';/g, '');
 s = s.replace(/\$\('carTrackName'\)\.textContent=\(carName&&carName!=='--'\?carName:'Carro --'\)\+' \/ '\+\(trackName&&trackName!=='--'\?trackName:'Pista --'\);\$\('carTrackIds'\)\.textContent='Carro ID: '\+\(carId\|\|'--'\)\+'  •  Pista ID: '\+\(trackId\|\|'--'\)/g, '');
 
+// Força o IP novo mesmo se o WebView/APK tiver cache antigo salvo.
+const force = "localStorage.setItem('gt7BridgeWsUrl','ws://192.168.1.70:8787/ws');localStorage.setItem('gt7BridgeHttpUrl','http://192.168.1.70:8787');try{localStorage.setItem('gt7_v158_bridge_settings',JSON.stringify({ps5Ip:'192.168.1.68',bridgeIp:'192.168.1.70',bridgeUrl:'ws://192.168.1.70:8787/ws',httpUrl:'http://192.168.1.70:8787'}));}catch(e){}";
+if (!s.includes("gt7BridgeHttpUrl','http://192.168.1.70:8787")) {
+  s = s.replace('(function(){', '(function(){' + force);
+}
+
 // Auto conexão sem alterar a função original de conexão.
 if (!s.includes('autoBridgeTimer')) {
   s = s.replace(
@@ -24,4 +30,4 @@ if (!s.includes('autoBridgeTimer')) {
 }
 
 fs.writeFileSync(file, s, 'utf8');
-console.log('Patch aplicado: IPs atualizados, card CARRO / PISTA removido e auto conexão ativa.');
+console.log('Patch aplicado: IPs/cache atualizados, card CARRO / PISTA removido e auto conexão ativa.');
