@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - ai-studio-gt7-telemetry
 
 jobs:
   build-android-apk:
@@ -25,20 +26,21 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Conferir estrutura e tela atual
+      - name: Conferir estrutura
         run: |
           echo "Arquivos na raiz:"
           ls -la
           echo "Arquivos em www:"
           ls -la www
-          echo "Marcadores esperados no app:"
-          grep -o "MÉDIA DE TEMPO\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" www/index.html || true
 
       - name: Instalar dependências
         run: npm install --no-audit --no-fund
 
-      - name: Aplicar patch visual
-        run: node scripts/patch-index.js
+      - name: Aplicar patches do app
+        run: |
+          node scripts/patch-index.js
+          node scripts/rad-session-patch.js
+          grep -o "INICIAR SEÇÃO\|SALVAR SEÇÃO\|VOLTAS CORRIGIDAS" www/index.html || true
 
       - name: Criar projeto Android se necessário
         run: |
@@ -50,10 +52,9 @@ jobs:
 
       - name: Sincronizar app web com Android
         run: |
-          node scripts/patch-index.js
           npx cap sync android
           echo "Verificando index copiado para o Android:"
-          grep -o "MÉDIA DE TEMPO\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" android/app/src/main/assets/public/index.html || true
+          grep -o "INICIAR SEÇÃO\|SALVAR SEÇÃO\|VOLTAS CORRIGIDAS" android/app/src/main/assets/public/index.html || true
           if grep -q "CARRO / PISTA" android/app/src/main/assets/public/index.html; then
             echo "ERRO: card CARRO / PISTA ainda existe"
             exit 1
@@ -68,6 +69,6 @@ jobs:
       - name: Enviar APK como artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GT7-Telemetria-v1.58-debug-apk
+          name: GT7-Telemetria-v1.59-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
