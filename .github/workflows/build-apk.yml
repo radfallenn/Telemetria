@@ -46,11 +46,8 @@ jobs:
           node scripts/rad-tach-rebuild-v2-patch.js
           node scripts/rad-ui-clean-actions-v3-patch.js
           node scripts/rad-persistent-cache-patch.js
-          grep -o "INICIAR SEÇÃO\|SALVAR SEÇÃO\|VOLTAS CORRIGIDAS\|RAD_CUSTOMIZER_V1\|RAD_BUDGET_STYLE_CUSTOMIZER_V1\|RAD_TACH_IMAGE_STYLES_V1\|RAD_TACH_REBUILD_V2\|RAD_UI_CLEAN_ACTIONS_V3\|RAD_PERSISTENT_CACHE_V1" www/index.html || true
-          if grep -q "RAD_AUTO_CONNECT_V2" www/index.html; then
-            echo "ERRO: auto conectar ainda existe"
-            exit 1
-          fi
+          node scripts/rad-fix-rpm-laps-autoconnect-v4.js
+          grep -o "INICIAR SEÇÃO\|SALVAR SEÇÃO\|VOLTAS CORRIGIDAS\|RAD_CUSTOMIZER_V1\|RAD_BUDGET_STYLE_CUSTOMIZER_V1\|RAD_TACH_IMAGE_STYLES_V1\|RAD_TACH_REBUILD_V2\|RAD_UI_CLEAN_ACTIONS_V3\|RAD_PERSISTENT_CACHE_V1\|RAD_FIX_RPM_LAPS_AUTOCONNECT_V4" www/index.html || true
 
       - name: Criar projeto Android se necessário
         run: |
@@ -64,13 +61,9 @@ jobs:
         run: |
           npx cap sync android
           echo "Verificando index copiado para o Android:"
-          grep -o "INICIAR SEÇÃO\|SALVAR SEÇÃO\|VOLTAS CORRIGIDAS\|RAD_CUSTOMIZER_V1\|RAD_BUDGET_STYLE_CUSTOMIZER_V1\|RAD_TACH_IMAGE_STYLES_V1\|RAD_TACH_REBUILD_V2\|RAD_UI_CLEAN_ACTIONS_V3\|RAD_PERSISTENT_CACHE_V1" android/app/src/main/assets/public/index.html || true
+          grep -o "INICIAR SEÇÃO\|SALVAR SEÇÃO\|VOLTAS CORRIGIDAS\|RAD_CUSTOMIZER_V1\|RAD_BUDGET_STYLE_CUSTOMIZER_V1\|RAD_TACH_IMAGE_STYLES_V1\|RAD_TACH_REBUILD_V2\|RAD_UI_CLEAN_ACTIONS_V3\|RAD_PERSISTENT_CACHE_V1\|RAD_FIX_RPM_LAPS_AUTOCONNECT_V4" android/app/src/main/assets/public/index.html || true
           if grep -q "CARRO / PISTA" android/app/src/main/assets/public/index.html; then
             echo "ERRO: card CARRO / PISTA ainda existe"
-            exit 1
-          fi
-          if grep -q "RAD_AUTO_CONNECT_V2" android/app/src/main/assets/public/index.html; then
-            echo "ERRO: auto conectar ainda existe"
             exit 1
           fi
 
@@ -83,6 +76,6 @@ jobs:
       - name: Enviar APK como artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GT7-Telemetria-v1.66-debug-apk
+          name: GT7-Telemetria-v1.67-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
