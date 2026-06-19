@@ -51,7 +51,8 @@ jobs:
           node scripts/rad-set-menu-clean-v6.js
           node scripts/rad-audit-hardening-v7.js
           node scripts/rad-stable-laps-nav-v8.js
-          grep -o "RAD_STABLE_LAPS_NAV_V8\|RAD_AUDIT_HARDENING_V7\|RAD_SET_MENU_CLEAN_V6\|RAD_ZERO_SAVE_SECTION_V5" www/index.html || true
+          node scripts/rad-remove-live-wait-v9.js
+          grep -o "RAD_REMOVE_LIVE_WAIT_V9\|RAD_STABLE_LAPS_NAV_V8\|RAD_AUDIT_HARDENING_V7\|RAD_SET_MENU_CLEAN_V6\|RAD_ZERO_SAVE_SECTION_V5" www/index.html || true
 
       - name: Criar projeto Android se necessário
         run: |
@@ -65,7 +66,7 @@ jobs:
         run: |
           npx cap sync android
           echo "Verificando index copiado para o Android:"
-          grep -o "RAD_STABLE_LAPS_NAV_V8\|RAD_AUDIT_HARDENING_V7\|RAD_SET_MENU_CLEAN_V6\|RAD_ZERO_SAVE_SECTION_V5" android/app/src/main/assets/public/index.html || true
+          grep -o "RAD_REMOVE_LIVE_WAIT_V9\|RAD_STABLE_LAPS_NAV_V8\|RAD_AUDIT_HARDENING_V7\|RAD_SET_MENU_CLEAN_V6\|RAD_ZERO_SAVE_SECTION_V5" android/app/src/main/assets/public/index.html || true
           if grep -q "CARRO / PISTA" android/app/src/main/assets/public/index.html; then
             echo "ERRO: card CARRO / PISTA ainda existe"
             exit 1
@@ -80,6 +81,6 @@ jobs:
       - name: Enviar APK como artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GT7-Telemetria-v1.71-debug-apk
+          name: GT7-Telemetria-v1.72-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
