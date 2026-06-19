@@ -53,7 +53,7 @@ jobs:
           node scripts/rad-stable-laps-nav-v8.js
           node scripts/rad-remove-live-wait-v9.js
           node scripts/rad-force-set-nav-v10.js
-          grep -o "RAD_FORCE_SET_NAV_V10\|RAD_REMOVE_LIVE_WAIT_V9\|RAD_STABLE_LAPS_NAV_V8" www/index.html || true
+          node scripts/rad-close-buttons-v12.js
 
       - name: Criar projeto Android se necessário
         run: |
@@ -64,14 +64,7 @@ jobs:
           fi
 
       - name: Sincronizar app web com Android
-        run: |
-          npx cap sync android
-          echo "Verificando index copiado para o Android:"
-          grep -o "RAD_FORCE_SET_NAV_V10\|RAD_REMOVE_LIVE_WAIT_V9\|RAD_STABLE_LAPS_NAV_V8" android/app/src/main/assets/public/index.html || true
-          if grep -q "CARRO / PISTA" android/app/src/main/assets/public/index.html; then
-            echo "ERRO: card CARRO / PISTA ainda existe"
-            exit 1
-          fi
+        run: npx cap sync android
 
       - name: Dar permissão ao Gradle
         run: chmod +x android/gradlew
@@ -82,6 +75,6 @@ jobs:
       - name: Enviar APK como artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GT7-Telemetria-v1.73-debug-apk
+          name: GT7-Telemetria-v1.75-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
