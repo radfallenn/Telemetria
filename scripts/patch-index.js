@@ -5,7 +5,8 @@ const file = path.join(__dirname, '..', 'www', 'index.html');
 let s = fs.readFileSync(file, 'utf8');
 
 // Atualiza IPs atuais da rede.
-s = s.replace(/192\.168\.1\.54/g, '192.168.1.68');
+s = s.replace(/192\.168\.1\.54/g, '192.168.1.92');
+s = s.replace(/192\.168\.1\.68/g, '192.168.1.92');
 s = s.replace(/192\.168\.1\.72/g, '192.168.1.70');
 
 // Remove somente o card CARRO / PISTA da tela principal.
@@ -24,4 +25,4 @@ s = s.replace(/setTimeout\(connect,500\)/g, '');
 s = s.replace(/<script id="RAD_FORCE_HTTP_BRIDGE_V1">[\s\S]*?<\/script>\s*/g, '');
 
 fs.writeFileSync(file, s, 'utf8');
-console.log('Patch aplicado: sem auto conectar, sem HTTP polling automático, card CARRO / PISTA removido.');
+console.log('Patch aplicado: PS5 192.168.1.92, sem auto conectar, sem HTTP polling automático, card CARRO / PISTA removido.');
