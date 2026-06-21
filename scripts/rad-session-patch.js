@@ -20,20 +20,17 @@ const script = `
   const $ = id => document.getElementById(id);
   const text = id => ($(id) && $(id).textContent.trim()) || '--';
   function toast(msg){ const t=$('toast'); if(t){ t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1600); } }
-  function numberFrom(el){ const n=parseInt(String(el.textContent).replace(/[^0-9-]/g,''),10); return Number.isFinite(n)?n:null; }
-  function applyCorrected(){ const el=$('correctedLaps'); if(!el || el.dataset.radLock==='1') return; const n=numberFrom(el); if(n!==null && n>0){ el.dataset.radLock='1'; el.textContent=String(Math.max(0,n-1)); setTimeout(()=>{el.dataset.radLock='0'},0); } }
-  function installCorrected(){ const el=$('correctedLaps'); if(!el) return; applyCorrected(); new MutationObserver(applyCorrected).observe(el,{childList:true,characterData:true,subtree:true}); }
   function values(){ return {date:new Date().toISOString(), best:text('bestLapCard'), last:text('lastLapCard'), total:text('totalTimeCard'), avg:text('avgTimeCard'), laps:text('correctedLaps'), max:text('maxSpeed'), speed:text('speed')}; }
   function renderSaved(){ const box=$('radSavedBox'); if(!box) return; const list=JSON.parse(localStorage.getItem('gt7_saved_sections')||'[]'); const s=list[0]; box.innerHTML='<h3>SEÇÕES SALVAS</h3>'+(s?'<div class="rad-saved-item"><b>'+new Date(s.date).toLocaleString('pt-BR')+'</b><span>Melhor: '+s.best+' • Voltas: '+s.laps+' • Total: '+s.total+'</span><span>Última: '+s.last+' • Média: '+s.avg+' • Max: '+s.max+'</span></div>':'<div class="rad-saved-item">Nenhuma seção salva ainda.</div>'); }
-  function resetSession(){ ['bestLapCard','lastLapCard','totalTimeCard','avgTimeCard','correctedLaps'].forEach(id=>{ if($(id)) $(id).textContent='--'; }); if($('maxSpeed')) $('maxSpeed').textContent='0'; localStorage.removeItem('gt7_current_session'); localStorage.removeItem('gt7_laps'); localStorage.setItem('gt7_session_started_at',new Date().toISOString()); toast('Seção iniciada'); }
+  function resetSession(){ ['bestLapCard','lastLapCard','totalTimeCard','avgTimeCard'].forEach(id=>{ if($(id)) $(id).textContent='--'; }); if($('correctedLaps')) $('correctedLaps').textContent='0'; if($('maxSpeed')) $('maxSpeed').textContent='0'; localStorage.removeItem('gt7_current_session'); localStorage.removeItem('gt7_laps'); localStorage.setItem('gt7_session_started_at',new Date().toISOString()); toast('Seção iniciada'); }
   function saveSession(){ const list=JSON.parse(localStorage.getItem('gt7_saved_sections')||'[]'); list.unshift(values()); localStorage.setItem('gt7_saved_sections',JSON.stringify(list.slice(0,80))); renderSaved(); toast('Seção salva localmente'); }
   function installButtons(){ const cards=document.querySelector('.cards'); if(!cards || $('radSessionActions')) return; const actions=document.createElement('div'); actions.id='radSessionActions'; actions.className='rad-session-actions'; actions.innerHTML='<button class="rad-session-btn rad-start" id="radStart"><i>🏁</i><div><b>INICIAR SEÇÃO</b><span>Limpa todos os dados da seção anterior</span></div></button><button class="rad-session-btn rad-save" id="radSave"><i>💾</i><div><b>SALVAR SEÇÃO</b><span>Salva os resultados desta seção</span></div></button>'; cards.insertAdjacentElement('afterend',actions); const saved=document.createElement('div'); saved.id='radSavedBox'; saved.className='rad-saved'; actions.insertAdjacentElement('afterend',saved); $('radStart').onclick=resetSession; $('radSave').onclick=saveSession; renderSaved(); }
   function installTach(){ const h=document.querySelector('.hero'); if(!h || h.querySelector('.rad-tach-number')) return; ['0','1','2','3','4','5','6','7','8'].forEach((n,i)=>{ const e=document.createElement('span'); e.className='rad-tach-number rad-n'+i; e.textContent=n; h.appendChild(e); }); }
   document.addEventListener('click',e=>{ if(e.target.closest('.copy-btn')) setTimeout(()=>toast('Copiado'),20); },true);
-  installCorrected(); installButtons(); installTach();
+  installButtons(); installTach();
 })();
 </script>`;
 html = html.replace('</head>', style + '\n</head>');
 html = html.replace('</body>', script + '\n</body>');
 fs.writeFileSync(file, html, 'utf8');
-console.log('Patch RAD_SESSION_FEATURES_V3 aplicado.');
+console.log('Patch RAD_SESSION_FEATURES_V3 aplicado sem desconto duplicado de voltas corrigidas.');
