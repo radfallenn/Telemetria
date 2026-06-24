@@ -57,6 +57,7 @@ jobs:
           node scripts/rad-udm-performance-v13.js
           node scripts/rad-stop-flicker-manual-v14.js
           node scripts/rad-dom-stabilizer-v15.js
+          node scripts/rad-core-udm-v16.js
 
       - name: Criar projeto Android se necessário
         run: |
@@ -78,6 +79,6 @@ jobs:
       - name: Enviar APK como artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GT7-Telemetria-v1.78-debug-apk
+          name: GT7-Telemetria-v1.79-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
