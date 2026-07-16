@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - ai-studio-gt7-telemetry
 
 jobs:
   build-android-apk:
@@ -25,20 +26,42 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Conferir estrutura e tela atual
+      - name: Conferir estrutura
         run: |
           echo "Arquivos na raiz:"
           ls -la
           echo "Arquivos em www:"
           ls -la www
-          echo "Marcadores esperados no app:"
-          grep -o "MÉDIA DE TEMPO\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" www/index.html || true
 
       - name: Instalar dependências
         run: npm install --no-audit --no-fund
 
-      - name: Aplicar patch visual
-        run: node scripts/patch-index.js
+      - name: Aplicar patches do app
+        run: |
+          node scripts/patch-index.js
+          node scripts/rad-session-patch.js
+          node scripts/rad-customizer-patch.js
+          node scripts/rad-budget-style-customizer-patch.js
+          node scripts/rad-tach-image-styles-patch.js
+          node scripts/rad-tach-rebuild-v2-patch.js
+          node scripts/rad-ui-clean-actions-v3-patch.js
+          node scripts/rad-persistent-cache-patch.js
+          node scripts/rad-fix-rpm-laps-autoconnect-v4.js
+          node scripts/rad-zero-save-section-v5.js
+          node scripts/rad-set-menu-clean-v6.js
+          node scripts/rad-audit-hardening-v7.js
+          node scripts/rad-stable-laps-nav-v8.js
+          node scripts/rad-remove-live-wait-v9.js
+          node scripts/rad-force-set-nav-v10.js
+          node scripts/rad-close-buttons-v12.js
+          node scripts/rad-udm-performance-v13.js
+          node scripts/rad-stop-flicker-manual-v14.js
+          node scripts/rad-dom-stabilizer-v15.js
+          node scripts/rad-core-udm-v16.js
+          node scripts/rad-connection-recovery-v17.js
+
+      - name: Validar app montado
+        run: node scripts/validate-built-app.js
 
       - name: Criar projeto Android se necessário
         run: |
@@ -49,15 +72,7 @@ jobs:
           fi
 
       - name: Sincronizar app web com Android
-        run: |
-          node scripts/patch-index.js
-          npx cap sync android
-          echo "Verificando index copiado para o Android:"
-          grep -o "MÉDIA DE TEMPO\|MELHOR VOLTA\|ÚLTIMA VOLTA\|TEMPO TOTAL\|VOLTAS CORRIGIDAS" android/app/src/main/assets/public/index.html || true
-          if grep -q "CARRO / PISTA" android/app/src/main/assets/public/index.html; then
-            echo "ERRO: card CARRO / PISTA ainda existe"
-            exit 1
-          fi
+        run: npx cap sync android
 
       - name: Dar permissão ao Gradle
         run: chmod +x android/gradlew
@@ -68,6 +83,6 @@ jobs:
       - name: Enviar APK como artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GT7-Telemetria-v1.58-debug-apk
+          name: GT7-Telemetria-v1.80-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
