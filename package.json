@@ -1,6 +1,6 @@
 {
   "name": "gt7-telemetria-apk",
-  "version": "1.58.0",
+  "version": "1.80.0",
   "private": true,
   "description": "GT7 Telemetria packaged with Capacitor for Android APK build via GitHub Actions.",
   "scripts": {
